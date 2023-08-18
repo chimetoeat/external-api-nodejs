@@ -3,7 +3,7 @@
 <div class="container mt-5">
     <h1>Netzwelt Login</h1>
   
-    <form action="/login" method="POST">
+    <form action="/account/login" method="POST">
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input type="text" class="form-control" id="username" name="username">
@@ -17,6 +17,12 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
-  </div>
+    <% if (errorMessage) { %>
+        <div class="alert alert-danger mt-5" role="alert">
+          <%= errorMessage %>
+        </div>
+      <% } %>
 
+</div>
+ 
 <%- include('partials/footer') %>

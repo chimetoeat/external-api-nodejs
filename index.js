@@ -19,33 +19,36 @@ app.use(session({
     saveUninitialized: false
   }));
 
+  
+const errorMessage = ""
+
 
 // Home route GET
-app.get("/", function (req, res) {
+app.get("/home/index", function (req, res) {
     if (req.session.user) {
         res.render("home", { user: req.session.user });
     } else {
-        res.redirect("/login")
+        res.redirect("/account/login")
     }
     
 });
 
 // Login Route GET, if already logged in, it will redirect to Home.
-app.get("/login", function (req, res) {
+app.get("/account/login", function (req, res) {
     if (req.session.user) {
-        res.redirect("/");
+        res.redirect("/home/index");
     } else {
-        res.render("login")
+        res.render("login", {errorMessage})
     }
 });
 
 // Login Route POST, check Username & Password via Post Request to given JSON External API
-app.post('/login', async (req, res) => {
+app.post('/account/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
         // POST REQUEST to external JSON API for authentication
-        const apiResponse = await axios.post('http://localhost:3000/authenticate', {
+        const apiResponse = await axios.post('https://netzwelt-devtest.azurewebsites.net/Account/SignIn', {
         username,
         password,
         });
@@ -53,49 +56,23 @@ app.post('/login', async (req, res) => {
         // Authorized users will be redirected to Home Page
         const loggedInUser = apiResponse.data.displayName
         req.session.user = loggedInUser;
-        res.redirect("/");
+        res.redirect("/home/index");
         
     } catch (error) {
-
+        
         // Unauthorized users cannot access Home Page
-        console.error(error);
-        res.render("login");
+        const errorMessage = "Invalid username or password"
+        res.render("login", { errorMessage });
     }
   });
-
 
 // Logout Route
-app.post('/logout', (req, res) => {
+app.post('/account/logout', (req, res) => {
     req.session.destroy();
-    res.redirect('/login');
+    res.redirect('/account/login');
 });
 
-
-
-  // CODES HERE ARE FOR TESTING PURPOSES
-  const SignInRequest = [{
-    username: 'user1',
-    password: 'pass1'
-}];
-
-  const UserData = {
-    username: 'user1',
-    displayName: 'User 1',
-    roles: ["Developer", "Designer", "Lead"]
-  };
-  
-  app.post('/authenticate', (req, res) => {
-    const { username, password } = req.body;
-  
-    const user = SignInRequest.find(u => u.username === username && u.password === password);
-  
-    if (user) {
-      res.status(200).json(UserData);
-    }
-  });
-
-  // CODES HERE ARE FOR TESTING PURPOSES
-
+// Server Port Setup
 app.listen("3000", function () {
     console.log("Server started at port 3000.");
   });
