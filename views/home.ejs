@@ -1,7 +1,15 @@
 <%- include('partials/header') %>
 
-<div class="centered">
-    <p>Welcome user!</p>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1>Home Page</h1>
+      
+      <form action="/logout" method="post">
+        <button class="btn btn-danger" type="submit">Logout</button>
+      </form>
+    </div>
+
+    <p>Welcome, <%= user %>!</p>
 </div>
 
 <%- include('partials/footer') %>
