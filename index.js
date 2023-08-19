@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 
 
 const app = express();
-app.use(express.static("public"))
+app.use(express.static(__dirname + '/public'))
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended : true}));
 app.use(express.json());
@@ -84,6 +84,6 @@ app.post('/account/logout', (req, res) => {
 });
 
 // Server Port Setup
-app.listen("5000", function () {
-    console.log("Server started at port 5000.");
+app.listen("3000", function () {
+    console.log("Server started at port 3000.");
 });

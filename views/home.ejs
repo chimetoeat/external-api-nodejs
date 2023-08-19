@@ -2,7 +2,7 @@
 
   <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center">
-      <h1>AWESOME</h1>
+      <h1>AWESOME HOME PAGE</h1>
       
       <form action="/account/logout" method="post">
         <button class="btn btn-danger" type="submit">Logout</button>
@@ -11,26 +11,52 @@
 
     <p>Welcome, <%= user %>!</p>
 
+    <hr>
+
     <h1>Territories</h1>
-    <ul>
-        <% renderNestedList(territories, null); %>
-    </ul>
+    <p>Here are the list of AWESOME territories.</p>
+    <% renderNestedList(territories, null); %>
     
+
+    <!-- Used to create the Hierarchy of Territories -->
     <% function renderNestedList(data, parentId) { %>
         <% const children = data.filter(item => item.parent === parentId); %>
         <% if (children.length > 0) { %>
-            <ul>
+            <ul class="tree">
                 <% children.forEach(child => { %>
-                    <li>
-                        <p>ID: <%= child.id %></p>
-                        <p>Name: <%= child.name %></p>
-                        <p>Parent: <%= child.parent %></p>
-                        <% renderNestedList(data, child.id); %>
-                    </li>
+                    <% if (checkChildren(data, child.id)) { %>
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="<%= child.id %>" />
+                                <label class="tree_label" for="<%= child.id %>"><%= child.name %></label>
+                                <% renderNestedList(data, child.id); %>
+                            </li> 
+                        </ul>  
+                    <% } else { %>
+                        <ul>
+                            <li>
+                                <span class="tree_label"><%= child.name %></span>
+                                <% renderNestedList(data, child.id); %>
+                            </li>
+                        </ul>
+                    <% } %>
+                    
                 <% }); %>
             </ul>
         <% } %>
     <% } %>
+    
+    <!-- Used to check if the current child is also a parent -->
+    <% function checkChildren(data, parentId) { %>
+        <% const children = data.filter(item => item.parent === parentId); %>
+        <% if (children.length > 0) { %>
+            <% return true; %>
+        <% } else { %>
+            <% return false; %>
+        <% } %>
+    <% } %>
+
+
 </div>
 
 <%- include('partials/footer') %>
